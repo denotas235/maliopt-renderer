@@ -1,38 +1,32 @@
 {
-	"schemaVersion": 1,
-	"id": "malioptrender",
-	"version": "${version}",
-	"name": "Malioptrender",
-	"description": "This is an example description! Tell everyone what your mod is about!",
-	"authors": [
-		"Me!"
-	],
-	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
-	},
-	"license": "CC0-1.0",
-	"icon": "assets/malioptrender/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			"com.malioptrender.Malioptrender"
-		],
-		"client": [
-			"com.malioptrender.client.MalioptrenderClient"
-		]
-	},
-	"mixins": [
-		"malioptrender.mixins.json",
-		{
-			"config": "malioptrender.client.mixins.json",
-			"environment": "client"
-		}
-	],
-	"depends": {
-		"fabricloader": ">=0.19.2",
-		"minecraft": "~1.21.11",
-		"java": ">=21",
-		"fabric-api": "*"
-	}
+  "schemaVersion": 1,
+  "id": "malioptrender",
+  "version": "${version}",
+  "name": "MaliOpt Renderer",
+  "description": "Otimização visual e pipeline TBDR para GPUs ARM Mali",
+  "authors": ["Denotas"],
+  "contact": {
+    "homepage": "https://github.com/denotas235/maliopt-renderer",
+    "sources": "https://github.com/denotas235/maliopt-renderer"
+  },
+  "license": "Apache-2.0",
+  "icon": "assets/malioptrender/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["com.maliopt.MaliOptMod"],
+    "modmenu": ["com.maliopt.MaliOptMod"]
+  },
+  "mixins": ["maliopt.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.19.2",
+    "minecraft": "~1.21.11",
+    "java": ">=21",
+    "fabric-api": "*",
+    "yet_another_config_lib_v3": "*",
+    "modmenu": "*"
+  },
+  "suggests": {
+    "sodium": "*",
+    "iris": "*"
+  }
 }
