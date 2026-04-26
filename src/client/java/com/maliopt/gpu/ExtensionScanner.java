@@ -94,20 +94,30 @@ public class ExtensionScanner {
         LOGGER.info("[MaliOptRenderer] Detectadas: {} extensões", detectedExtensions.size());
         LOGGER.info("[MaliOptRenderer] Comuns (Mali-G52): {} extensões", commonExtensions.size());
         LOGGER.info("[MaliOptRenderer] Em falta: {} extensões", missingExtensions.size());
+        LOGGER.info("[MaliOptRenderer] Cobertura: {}%", getCoveragePercent());
+        LOGGER.info("[MaliOptRenderer] ");
+        LOGGER.info("[MaliOptRenderer] ========== LISTA COMPLETA (102 extensões Mali-G52) ==========");
 
-        String[] criticalExtensions = {
-            "GL_ARM_shader_framebuffer_fetch",
-            "GL_EXT_shader_pixel_local_storage",
-            "GL_KHR_texture_compression_astc_ldr",
-            "GL_ARM_mali_shader_binary",
-            "GL_EXT_discard_framebuffer"
-        };
+        List<String> sorted = new ArrayList<>(MALI_G52_EXTENSIONS);
+        Collections.sort(sorted);
 
-        for (String ext : criticalExtensions) {
+        int activeCount = 0;
+        int inactiveCount = 0;
+
+        for (String ext : sorted) {
             boolean present = detectedExtensions.contains(ext);
-            LOGGER.info("[MaliOptRenderer]   {} {}", present ? "✅" : "❌", ext);
+            if (present) {
+                LOGGER.info("[MaliOptRenderer]   ✅ ATIVA   | {}", ext);
+                activeCount++;
+            } else {
+                LOGGER.info("[MaliOptRenderer]   ❌ INATIVA | {}", ext);
+                inactiveCount++;
+            }
         }
-        LOGGER.info("[MaliOptRenderer] =================================================");
+
+        LOGGER.info("[MaliOptRenderer] ");
+        LOGGER.info("[MaliOptRenderer] TOTAL: {} ativas, {} inativas (de 102)", activeCount, inactiveCount);
+        LOGGER.info("[MaliOptRenderer] =================================================================");
     }
 
     public Set<String> getDetectedExtensions() { return Collections.unmodifiableSet(detectedExtensions); }
