@@ -1,13 +1,11 @@
 pluginManagement {
-	repositories {
-		maven {
-			name = 'Fabric'
-			url = 'https://maven.fabricmc.net/'
-		}
-		mavenCentral()
-		gradlePluginPortal()
-	}
+repositories {
+maven {
+name = 'Fabric'
+url = 'https://maven.fabricmc.net/'
 }
-
-// Should match your modid
+mavenCentral()
+gradlePluginPortal()
+}
+}
 rootProject.name = 'malioptrender'
