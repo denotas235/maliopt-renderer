@@ -28,7 +28,8 @@ dependencies {
     mappings "net.fabricmc:yarn:1.21.11+build.1:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-rendering-v0:${project.fabric_api_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api-bom:${project.fabric_api_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-rendering-v1"
 }
 
 processResources {
