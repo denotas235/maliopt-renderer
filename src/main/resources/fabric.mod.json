@@ -17,6 +17,7 @@
     "modmenu": ["com.maliopt.MaliOptMod"]
   },
   "mixins": [
+    "maliopt.texture.mixins.json",
     "maliopt.texture.mixins.json","maliopt.mixins.json"],
   "depends": {
     "fabricloader": ">=0.19.2",
