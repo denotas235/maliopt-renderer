@@ -4,7 +4,7 @@
 set -euo pipefail
 
 # ── Config ────────────────────────────────────────────────────────────────────
-MC_VERSION="${MC_VERSION:-1.21.10}"   # override via env se necessário
+MC_VERSION="${MC_VERSION:-1.21.11}"   # override via env se necessário
 ASTCENC_VERSION="4.7.0"
 ASTCENC_URL="https://github.com/ARM-software/astc-encoder/releases/download/${ASTCENC_VERSION}/astcenc-${ASTCENC_VERSION}-linux-x64.zip"
 INSTALL_DIR="/usr/local/bin"

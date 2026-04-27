@@ -25,7 +25,7 @@ from pathlib import Path
 # ── Configuração ─────────────────────────────────────────────────────────────
 
 BLOCK_SIZE   = "4x4"        # Bloco ASTC: 4x4 = razão 4:1 para RGBA8
-OUTPUT_BASE  = Path("src/main/resources/assets/hyengra/textures_astc")
+OUTPUT_BASE  = Path("src/main/resources/assets/maliopt/textures_astc")
 MANIFEST_JSON = Path("astc_manifest.json")  # mapa { "namespace:path" → "astc_path" }
 
 # Prefixos dentro do minecraft.jar a extrair
@@ -173,7 +173,7 @@ def run(jar_path: Path, quality_flag: str, dry_run: bool):
             fail += 1
             continue
 
-        # Destino no mod: assets/hyengra/textures_astc/<ns>/<tex_path>.astc
+        # Destino no mod: assets/maliopt/textures_astc/<ns>/<tex_path>.astc
         dest = OUTPUT_BASE / ns / (tex_path + ".astc")
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(astc, dest)
@@ -195,7 +195,7 @@ def run(jar_path: Path, quality_flag: str, dry_run: bool):
 
     # 3. Manifesto
     print(f"\n[3/3] Gravando manifesto...")
-    manifest_dest = Path("src/main/resources/assets/hyengra") / MANIFEST_JSON.name
+    manifest_dest = Path("src/main/resources/assets/maliopt") / MANIFEST_JSON.name
     manifest_dest.parent.mkdir(parents=True, exist_ok=True)
     with open(manifest_dest, "w", encoding="utf-8") as f:
         json.dump(manifest, f, indent=2, ensure_ascii=False)
