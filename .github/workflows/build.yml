@@ -7,29 +7,17 @@ jobs:
     steps:
       - name: checkout repository
         uses: actions/checkout@v4
-
-      - name: setup jdk 21
+      - name: validate gradle wrapper
+        uses: gradle/actions/wrapper-validation@v4
+      - name: setup jdk
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
-
-      - name: Force JAVA_HOME to JDK 21
-        run: |
-          echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
-          echo "$JAVA_HOME/bin" >> $GITHUB_PATH
-
-      - name: Verify Java version
-        run: java -version
-
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
-
       - name: build
         run: ./gradlew build
-        env:
-          JAVA_HOME: ${{ env.JAVA_HOME }}
-
       - name: capture build artifacts
         uses: actions/upload-artifact@v4
         with:
