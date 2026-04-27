@@ -4,19 +4,14 @@ import com.maliopt.core.MaliOptLogger;
 import com.maliopt.core.ModuleActivator;
 import com.maliopt.gpu.CapabilityGate;
 import com.maliopt.gpu.ExtensionScanner;
-import com.terraformersmc.modmenu.api.ConfigScreenFactory;
-import com.terraformersmc.modmenu.api.ModMenuApi;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MaliOptMod implements ClientModInitializer, ModMenuApi {
+public class MaliOptMod implements ClientModInitializer {
     public static final String MOD_ID = "malioptrender";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-
-    @Override
-    public ConfigScreenFactory<?> getModConfigScreenFactory() { return parent -> null; }
 
     @Override
     public void onInitializeClient() {

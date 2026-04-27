@@ -14,7 +14,6 @@
   "environment": "client",
   "entrypoints": {
     "client": ["com.maliopt.MaliOptMod"],
-    "modmenu": ["com.maliopt.MaliOptMod"]
   },
   "mixins": [
     "maliopt.mixins.json",
@@ -25,7 +24,6 @@
     "java": ">=21",
     "fabric-api": "*",
     "yet_another_config_lib_v3": "*",
-    "modmenu": "*"
   },
   "suggests": {
     "sodium": "*",
