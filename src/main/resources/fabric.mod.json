@@ -17,8 +17,9 @@
     "modmenu": ["com.maliopt.MaliOptMod"]
   },
   "mixins": [
-    "maliopt.texture.mixins.json",
-    "maliopt.texture.mixins.json","maliopt.mixins.json"],
+    "maliopt.mixins.json",
+    "maliopt.texture.mixins.json"
+  ],
   "depends": {
     "fabricloader": ">=0.19.2",
     "minecraft": "~1.21.11",
