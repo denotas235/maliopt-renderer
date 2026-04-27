@@ -9,14 +9,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameRenderer.class)
 public class MixinGameRenderer {
-
     @Inject(method = "render", at = @At("HEAD"))
-    private void onRenderHead(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci) {
-        // Inicialização tardia do MaliOptRenderer
-    }
+    private void onRenderHead(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci) {}
 
     @Inject(method = "render", at = @At("TAIL"))
-    private void onRenderTail(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci) {
-        // Pipeline de pós-processamento do MaliOptRenderer
-    }
+    private void onRenderTail(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci) {}
 }
