@@ -13,20 +13,21 @@
   "icon": "assets/malioptrender/icon.png",
   "environment": "client",
   "entrypoints": {
-    "client": ["com.maliopt.MaliOptMod"],
+    "client": ["com.maliopt.MaliOptMod"]
   },
   "mixins": [
-    "maliopt.mixins.json",
+    "maliopt.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.19.2",
     "minecraft": "~1.21.11",
     "java": ">=21",
-    "fabric-api": "*",
-    "yet_another_config_lib_v3": "*",
+    "fabric-api": "*"
   },
   "suggests": {
     "sodium": "*",
-    "iris": "*"
+    "iris": "*",
+    "modmenu": "*",
+    "yet_another_config_lib_v3": "*"
   }
 }
