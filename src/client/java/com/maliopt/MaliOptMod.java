@@ -1,6 +1,7 @@
 package com.maliopt;
 
 import com.maliopt.gpu.ExtensionScanner;
+import com.maliopt.gpu.CapabilityGate;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ public class MaliOptMod implements ClientModInitializer {
         LOGGER.info("[MaliOptRenderer] Iniciando...");
 
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+            CapabilityGate.initialize();
             LOGGER.info("[MaliOptRenderer] Cliente iniciado — a analisar extensões...");
             ExtensionScanner scanner = new ExtensionScanner();
             scanner.scan();
