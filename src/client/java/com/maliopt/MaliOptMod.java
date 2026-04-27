@@ -6,6 +6,7 @@ import com.maliopt.gpu.CapabilityGate;
 import com.maliopt.gpu.ExtensionScanner;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +27,10 @@ public class MaliOptMod implements ClientModInitializer {
             MaliOptLogger.info("Core", "Cobertura de extensões: " + scanner.getCoveragePercent() + "%");
             registerModules();
             ModuleActivator.activateAll();
+        });
+
+        WorldRenderEvents.END.register(context -> {
+            // Pipeline de pós-processamento do MaliOptRenderer (futuro)
         });
 
         ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
