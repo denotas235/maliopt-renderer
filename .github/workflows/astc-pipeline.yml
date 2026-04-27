@@ -1,0 +1,154 @@
+# .github/workflows/astc-pipeline.yml
+#
+# Executa a conversão PNG → ASTC e commita os ficheiros gerados
+# para o branch atual, prontos para serem incluídos no build do mod.
+#
+# Trigger manual (workflow_dispatch) para controlo total.
+# Também pode ser adicionado como step no build principal.
+
+name: PNG → ASTC Texture Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      mc_version:
+        description: "Versão do Minecraft"
+        required: true
+        default: "1.21.10"
+      quality:
+        description: "Qualidade de compressão"
+        required: true
+        default: "thorough"
+        type: choice
+        options:
+          - fast       # ~2 min  — CI rápido, qualidade aceitável
+          - medium     # ~5 min  — balanceado
+          - thorough   # ~15 min — melhor qualidade (para releases)
+
+  # Descomenta para rodar automaticamente em push que altere texturas
+  # push:
+  #   paths:
+  #     - "png_to_astc.py"
+  #     - "install_astcenc.sh"
+
+jobs:
+  convert-textures:
+    name: Convert PNG → ASTC ${{ github.event.inputs.mc_version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45   # thorough em ~800 texturas: ~20 min
+
+    env:
+      MC_VERSION: ${{ github.event.inputs.mc_version || '1.21.10' }}
+      QUALITY:    ${{ github.event.inputs.quality    || 'thorough' }}
+
+    steps:
+      # ── Checkout ─────────────────────────────────────────────────────────
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── Python ───────────────────────────────────────────────────────────
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # ── Cache astcenc ─────────────────────────────────────────────────────
+      - name: Cache astcenc
+        id: cache-astcenc
+        uses: actions/cache@v4
+        with:
+          path: /usr/local/bin/astcenc*
+          key: astcenc-4.7.0-linux-x64
+
+      # ── Cache minecraft.jar ───────────────────────────────────────────────
+      - name: Cache minecraft.jar
+        id: cache-mcjar
+        uses: actions/cache@v4
+        with:
+          path: minecraft-${{ env.MC_VERSION }}.jar
+          key: minecraft-jar-${{ env.MC_VERSION }}
+
+      # ── Setup (instala astcenc + baixa JAR se não em cache) ───────────────
+      - name: Setup astcenc & minecraft.jar
+        run: |
+          chmod +x install_astcenc.sh
+          bash install_astcenc.sh
+
+      # ── Dry-run (verifica quantas texturas serão convertidas) ─────────────
+      - name: Dry-run (inventory)
+        run: |
+          python3 png_to_astc.py minecraft-${MC_VERSION}.jar \
+            --quality fast \
+            --dry-run 2>&1 | tail -20
+
+      # ── Conversão principal ───────────────────────────────────────────────
+      - name: Convert PNG → ASTC (${{ env.QUALITY }})
+        run: |
+          python3 png_to_astc.py minecraft-${MC_VERSION}.jar \
+            --quality ${QUALITY}
+
+      # ── Valida manifesto gerado ───────────────────────────────────────────
+      - name: Validate manifest
+        run: |
+          python3 - <<'EOF'
+          import json, sys
+          from pathlib import Path
+
+          manifest_path = Path("src/main/resources/assets/hyengra/astc_manifest.json")
+          if not manifest_path.exists():
+              print("ERRO: manifesto não gerado")
+              sys.exit(1)
+
+          with open(manifest_path) as f:
+              manifest = json.load(f)
+
+          total    = len(manifest)
+          failures = [k for k, v in manifest.items() if not Path("src/main/resources/" + v["astc"]).exists()]
+          
+          print(f"Texturas no manifesto: {total}")
+          print(f"Ficheiros ASTC ausentes: {len(failures)}")
+          if failures:
+              print("Ausentes:")
+              for f in failures[:10]:
+                  print(f"  {f}")
+              sys.exit(1)
+          
+          total_astc_mb  = sum(v["size_kb"] for v in manifest.values()) / 1024
+          total_orig_mb  = sum(v["original_kb"] for v in manifest.values()) / 1024
+          ratio = (1 - total_astc_mb / total_orig_mb) * 100
+          print(f"PNG total:  {total_orig_mb:.1f} MB")
+          print(f"ASTC total: {total_astc_mb:.1f} MB")
+          print(f"Redução:    {ratio:.1f}%")
+          print("✓ Manifesto válido")
+          EOF
+
+      # ── Upload artefacto (para inspeção) ──────────────────────────────────
+      - name: Upload ASTC textures artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: astc-textures-${{ env.MC_VERSION }}
+          path: |
+            src/main/resources/assets/hyengra/textures_astc/
+            src/main/resources/assets/hyengra/astc_manifest.json
+          retention-days: 7
+
+      # ── Commit de volta ao repo ───────────────────────────────────────────
+      - name: Commit ASTC textures
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add src/main/resources/assets/hyengra/textures_astc/
+          git add src/main/resources/assets/hyengra/astc_manifest.json
+          
+          # Só commita se houver mudanças
+          if git diff --staged --quiet; then
+            echo "Nenhuma mudança para commitar"
+          else
+            TOTAL=$(git diff --staged --name-only | grep -c ".astc" || true)
+            git commit -m "chore(astc): convert ${TOTAL} textures PNG→ASTC ${MC_VERSION} [quality=${QUALITY}]"
+            git push
+            echo "✓ Commit feito: ${TOTAL} ficheiros .astc"
+          fi
